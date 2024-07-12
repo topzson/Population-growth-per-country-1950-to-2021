@@ -36,7 +36,7 @@ func SetupDatabase() {
 
 	db = database
 
-	csvFile, err := os.Open("D:\\PTNFILE\\workspaces\\Population-growth-per-country-1950-to-2021\\backend\\entity\\data.csv")
+	csvFile, err := os.Open("data.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
