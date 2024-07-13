@@ -56,7 +56,7 @@ func SetupDatabase() {
 		data := CSVdata{
 			Name:     each[0],
 			Date:     each[1],
-			Value:    stringToInt(each[2]),
+			Value:    each[2],
 			Category: each[0],
 			// 	Population_1:        stringToInt(each[3]),
 			// 	Population_5:        stringToInt(each[4]),

@@ -4,7 +4,7 @@ type CSVdata struct {
 	Name     string
 	Date     string
 	Category string
-	Value    float64
+	Value    string
 	// Population_1        float64
 	// Population_5        float64
 	// Population_15       float64

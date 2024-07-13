@@ -88,7 +88,7 @@ const makeKeyframes = (data, numOfSlice) => {
 };
 
 // Custom hook to fetch data and create keyframes
-const useKeyframes = (dataUrl, numOfSlice) => {
+const useKeyframes = (dataUrl, numOfSlice ) => {
   const [keyframes, setKeyframes] = useState([]);
   const [error, setError] = useState(null);
 
@@ -97,7 +97,7 @@ const useKeyframes = (dataUrl, numOfSlice) => {
       setError(null);
       try {
         const response = await axios.get(dataUrl);
-        const data = response.data.data;
+        let data = response.data.data;
 
         // Convert JSON data to required format
         const nextData = data.map(({ Name, Date, Catagory, Value }) => ({
@@ -116,7 +116,7 @@ const useKeyframes = (dataUrl, numOfSlice) => {
     };
 
     fetchData();
-  }, [dataUrl, numOfSlice]);
+  }, [dataUrl, numOfSlice ]);
 
   return { keyframes, error };
 };

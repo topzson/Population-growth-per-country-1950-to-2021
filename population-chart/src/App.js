@@ -17,7 +17,8 @@ function App() {
   const { width: windowWidth } = useWindowSize();
   const chartWidth = windowWidth - 64;
   const chartHeight = 600;
-  const { keyframes } = useKeyframes(dataUrl, numOfSlice);
+
+  const { keyframes } = useKeyframes(dataUrl, numOfSlice );
   const chartRef = React.useRef();
   const handleReplay = () => {
     chartRef.current.replay();
@@ -37,7 +38,8 @@ function App() {
       <h1>Population Growth per country, 1950 to 2021</h1>
 
       <div style={{ paddingTop: "1em"}}>
-        <button onClick={handleReplay}>replay</button>
+  
+        <button onClick={handleReplay}>Replay</button>
         <button onClick={playing ? handleStop : handleStart}>
           { playing ? 'stop' : 'start' }
         </button>
