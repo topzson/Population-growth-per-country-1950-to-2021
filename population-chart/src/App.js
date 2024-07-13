@@ -3,7 +3,7 @@ import RacingBarChart from "./RacingBarChart";
 import useKeyframes from "./useKeyframes";
 import useWindowSize from "./useWindowSize";
 
-const dataUrl = "/data/category-brands.csv";
+const dataUrl = "http://localhost:8080/CSVdatas";
 const numOfBars = 12;
 const numOfSlice = 10;
 const chartMargin = {
@@ -17,7 +17,7 @@ function App() {
   const { width: windowWidth } = useWindowSize();
   const chartWidth = windowWidth - 64;
   const chartHeight = 600;
-  const keyframes = useKeyframes(dataUrl, numOfSlice);
+  const { keyframes } = useKeyframes(dataUrl, numOfSlice);
   const chartRef = React.useRef();
   const handleReplay = () => {
     chartRef.current.replay();
@@ -30,9 +30,11 @@ function App() {
   }
   const playing = chartRef.current ? chartRef.current.playing : false;
   const [_, forceUpdate] = useState();
+
+
   return (
     <div style={{ margin: "0 2em" }}>
-      <h1>Bar Chart Race Demo</h1>
+      <h1>Population Growth per country, 1950 to 2021</h1>
 
       <div style={{ paddingTop: "1em"}}>
         <button onClick={handleReplay}>replay</button>

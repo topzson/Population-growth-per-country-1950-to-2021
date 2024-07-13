@@ -110,7 +110,7 @@ const RacingBarChart = React.forwardRef(({
       if (keyframes.length === 0) {
         return []
       }
-      return keyframes[0].data.map(d => d.name);
+      return keyframes[0].data.map(d => d.Country);
     },
     [keyframes]
   );

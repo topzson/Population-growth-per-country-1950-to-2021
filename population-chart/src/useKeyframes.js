@@ -1,17 +1,18 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import csvParse from "csv-parse/lib/sync";
 
-const buildFindData = data => {
+// Utility function to build a data finder
+const buildFindData = (data) => {
   const dataByDateAndName = new Map();
-  data.forEach(dataPoint => {
+  data.forEach((dataPoint) => {
     const { date, name } = dataPoint;
     if (!dataByDateAndName.get(date)) {
       dataByDateAndName.set(date, { [name]: dataPoint });
     } else {
       const nextGroup = {
         ...dataByDateAndName.get(date),
-        [name]: dataPoint
+        [name]: dataPoint,
       };
       dataByDateAndName.set(date, nextGroup);
     }
@@ -24,31 +25,27 @@ const buildFindData = data => {
     }
   };
   return finder;
-}
+};
 
+// Utility function to make keyframes
 const makeKeyframes = (data, numOfSlice) => {
-  /**
-   * Assume data is an array of { date: string, name: string, value: number, ...others }.
-   * This function return an array of keyframe, each keyframe is { date: Date, data: { name: string, value: number, ...others }[] }.
-   * At first we will collect all of the name appearing in the original data.
-   * The `data` field of keyframe is descending sorted by `value` field.
-   */
   const findData = buildFindData(data);
   const nameSet = new Set(data.map(({ name }) => name));
   const nameList = [...nameSet];
   const dateSet = new Set(data.map(({ date }) => date));
   const dateList = [...dateSet];
 
-  const frames = dateList.sort().map(date => ({
+  const frames = dateList.sort().map((date) => ({
     date,
-    data: nameList.map(name => {
+    data: nameList.map((name) => {
       const dataPoint = findData({ date, name });
       return {
         ...dataPoint,
         value: dataPoint ? dataPoint.value : 0,
       };
-    })
+    }),
   }));
+
   const keyframes = frames
     .reduce((result, frame, idx) => {
       const prev = frame;
@@ -60,22 +57,21 @@ const makeKeyframes = (data, numOfSlice) => {
         const nextTimestamp = new Date(next.date).getTime();
         const diff = nextTimestamp - prevTimestamp;
         for (let i = 0; i < numOfSlice; i++) {
-          const sliceDate = new Date(prevTimestamp + diff * i / numOfSlice);
+          const sliceDate = new Date(prevTimestamp + (diff * i) / numOfSlice);
           const sliceData = frame.data.map(({ name, value, ...others }) => {
             const prevValue = value;
             const nextDataPoint = findData({ date: next.date, name });
             const nextValue = nextDataPoint ? nextDataPoint.value : 0;
-            const sliceValue =
-              prevValue + (nextValue - prevValue) * i / numOfSlice;
+            const sliceValue = prevValue + ((nextValue - prevValue) * i) / numOfSlice;
             return {
               name,
               value: sliceValue,
-              ...others
+              ...others,
             };
           });
           result.push({
             date: sliceDate,
-            data: sliceData
+            data: sliceData,
           });
         }
       }
@@ -84,30 +80,45 @@ const makeKeyframes = (data, numOfSlice) => {
     .map(({ date, data }) => {
       return {
         date,
-        data: data.sort((a, b) => b.value - a.value)
+        data: data.sort((a, b) => b.value - a.value),
       };
     });
+
   return keyframes;
 };
 
-function useKeyframes(dataUrl, numOfSlice) {
-  const [keyframes, setKeyframes] = React.useState([]);
-  React.useEffect(() => {
-    axios.get(dataUrl).then(resp => {
-      const { data: csvString } = resp;
-      const nextData = csvParse(csvString)
-        .slice(1)
-        .map(([date, name, category, value]) => ({
-          date,
-          name,
-          category,
-          value: Number(value)
+// Custom hook to fetch data and create keyframes
+const useKeyframes = (dataUrl, numOfSlice) => {
+  const [keyframes, setKeyframes] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setError(null);
+      try {
+        const response = await axios.get(dataUrl);
+        const data = response.data.data;
+
+        // Convert JSON data to required format
+        const nextData = data.map(({ Name, Date, Catagory, Value }) => ({
+          name: Name,
+          date: Date,
+          catagory: Catagory,
+          value: Number(Value),
         }));
-      const keyframes = makeKeyframes(nextData, numOfSlice);
-      setKeyframes(keyframes);
-    });
+
+        const keyframes = makeKeyframes(nextData, numOfSlice);
+        setKeyframes(keyframes);
+      } catch (error) {
+        setError(error);
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, [dataUrl, numOfSlice]);
-  return keyframes;
-}
+
+  return { keyframes, error };
+};
 
 export default useKeyframes;

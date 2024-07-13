@@ -5,7 +5,7 @@ import { AxisTop as VxAxisTop } from "@vx/axis";
 
 const AxisTop = (props) => {
   const { domainMax, xMax } = props;
-  const numTicks = xMax > 500 ? 5 : Math.floor(xMax / 100);
+  const numTicks = xMax > 500 ? 4 : Math.floor(xMax / 100);
   const xScaleForAxis = scaleLinear({
     domain: [0, domainMax],
     range: [0, xMax]
