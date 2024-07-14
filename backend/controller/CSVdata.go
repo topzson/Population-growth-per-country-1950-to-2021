@@ -8,8 +8,6 @@ import (
 	"net/http"
 )
 
-// 7.ดึงข้อมูลด้วย ID GET /user/id
-
 func Getdatabyid(c *gin.Context) {
 
 	var data entity.CSVdata
@@ -28,13 +26,11 @@ func Getdatabyid(c *gin.Context) {
 
 }
 
-// GET /users
-
 func Listdata(c *gin.Context) {
 
 	var data []entity.CSVdata
 
-	if err := entity.DB().Raw("SELECT * FROM cs_vdata").Scan(&data).Error; err != nil {
+	if err := entity.DB().Raw("SELECT a.name ,a.date,a.category,a.value,b.region,b.url FROM cs_vdata a inner join regions b on a.name = b.name").Scan(&data).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
