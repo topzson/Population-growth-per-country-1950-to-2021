@@ -88,7 +88,7 @@ const makeKeyframes = (data, numOfSlice) => {
 };
 
 // Custom hook to fetch data and create keyframes
-const useKeyframes = (dataUrl, numOfSlice ) => {
+const useKeyframes = (dataUrl, numOfSlice ,selectedRegions ) => {
   const [keyframes, setKeyframes] = useState([]);
   const [error, setError] = useState(null);
 
@@ -100,15 +100,24 @@ const useKeyframes = (dataUrl, numOfSlice ) => {
         let data = response.data.data;
 
         // Convert JSON data to required format
-        const nextData = data.map(({ Name, Date, Catagory, Value }) => ({
+        const nextData = data.map(({ Name, Date, Catagory, Value ,Region ,Url }) => ({
           name: Name,
           date: Date,
           catagory: Catagory,
           value: Number(Value),
+          region: Region,
+          url: Url,
         }));
-
-        const keyframes = makeKeyframes(nextData, numOfSlice);
-        setKeyframes(keyframes);
+        if(selectedRegions.length > 0){
+          const filterdata = nextData.filter(d => selectedRegions.length === 0 || selectedRegions.includes(d.region));
+          const keyframes = makeKeyframes(filterdata, numOfSlice);
+          setKeyframes(keyframes);
+        }else{
+          const keyframes = makeKeyframes(nextData, numOfSlice);
+          setKeyframes(keyframes);
+        }
+        
+        
       } catch (error) {
         setError(error);
         console.error("Error fetching data:", error);
@@ -116,7 +125,7 @@ const useKeyframes = (dataUrl, numOfSlice ) => {
     };
 
     fetchData();
-  }, [dataUrl, numOfSlice ]);
+  }, [dataUrl, numOfSlice ,selectedRegions ]);
 
   return { keyframes, error };
 };

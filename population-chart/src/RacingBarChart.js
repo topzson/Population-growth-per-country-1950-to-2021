@@ -34,11 +34,12 @@ const RacingBarChart = React.forwardRef(({
           }
         });
         updateFrameRef.current = null;
-      }, 250);
+      }, 50);
     }
   });
   const barGroupRef = useRef();
   const axisRef = useRef();
+
   useImperativeHandle(ref, () => ({
     replay: () => {
       clearTimeout(updateFrameRef.current);
@@ -63,6 +64,7 @@ const RacingBarChart = React.forwardRef(({
       }));
       barGroupRef.current.stop();
       axisRef.current.stop();
+   
     },
     playing,
   }));
@@ -82,12 +84,14 @@ const RacingBarChart = React.forwardRef(({
       if (playing) {
         barGroupRef.current.start();
         axisRef.current.start();
+        
       }
     }
   });
   const frame = keyframes[frameIdx];
   const { date: currentDate, data: frameData } = frame;
   const values = frameData.map(({ value }) => value);
+  const totalValue = values.reduce((acc, val) => acc + val, 0);
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
   const domainMax = Math.max(...values);
@@ -134,12 +138,22 @@ const RacingBarChart = React.forwardRef(({
         />
         <text
           textAnchor="end"
-          style={{ fontSize: "1.25em" }}
+          style={{ fontSize: "4em" }}
           x={xMax}
-          y={yMax}
+          y={yMax - 50}
         >
           {dateInYear}
         </text>
+        <text
+          textAnchor="end"
+          style={{ fontSize: "2em"}}
+          x={xMax}
+          y={yMax} 
+          fill="gray"
+        >
+          Total: {totalValue.toLocaleString()}
+        </text>
+      
         <line
           x1={0}
           y1={0}
@@ -152,8 +166,11 @@ const RacingBarChart = React.forwardRef(({
           xMax={xMax}
           ref={axisRef}
         />
+
+        
       </Group>
     </svg>
+    
   );
 });
 

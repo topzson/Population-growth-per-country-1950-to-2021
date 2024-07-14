@@ -6,11 +6,12 @@ const AnimatedBar = animated(Bar);
 
 const RacingBarGroup = forwardRef(({ frameData, xScale, yScale, colorScale }, ref) => {
   const transitions = useTransition(
-    frameData.map(({ name, value }, idx) => ({
+    frameData.map(({ name, value ,url}, idx) => ({
       y: yScale(idx),
       width: xScale(value),
       value,
-      name
+      name,
+      url
     })),
     d => d.name,
     {
@@ -24,8 +25,8 @@ const RacingBarGroup = forwardRef(({ frameData, xScale, yScale, colorScale }, re
     }
   );
   return transitions.map(({ item, props }) => {
-    const { y, value, width } = props;
-    const { name } = item;
+    const { y, value, width ,url} = props;
+    const { name} = item;
     return (
       <AnimatedBar
         x={xScale(0)}
@@ -36,7 +37,9 @@ const RacingBarGroup = forwardRef(({ frameData, xScale, yScale, colorScale }, re
         value={value.interpolate(v => v.toFixed())}
         name={name}
         key={name}
+        url= {url}
       />
+      
     );
   });
 });
