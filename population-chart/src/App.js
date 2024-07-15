@@ -3,7 +3,7 @@ import RacingBarChart from "./RacingBarChart";
 import useKeyframes from "./useKeyframes";
 import useWindowSize from "./useWindowSize";
 
-const dataUrl = "https://backend-service-population.onrender.com/CSVdatas";
+const dataUrl = //apiUrl;
 const numOfBars = 12;
 const numOfSlice = 10;
 const chartMargin = {
