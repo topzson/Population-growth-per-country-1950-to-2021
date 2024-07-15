@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleLinear } from "@vx/scale";
 import { AxisTop as VxAxisTop } from "@vx/axis";
-import { AxisBottom as VxAxisBottom } from "@vx/axis";
 
 const AxisTop = (props) => {
   const { domainMax, xMax } = props;
@@ -12,21 +11,6 @@ const AxisTop = (props) => {
     range: [0, xMax]
   });
   return <VxAxisTop
-    top={0}
-    left={0}
-    scale={xScaleForAxis}
-    tickLabelProps={() => ({ textAnchor: 'middle', dy: '-0.25em', fontSize: 12, })}
-    numTicks={numTicks}
-  />
-}
-const AxisBottom = (props) => {
-  const { domainMax, xMax } = props;
-  const numTicks = xMax > 500 ? 4 : Math.floor(xMax / 100);
-  const xScaleForAxis = scaleLinear({
-    domain: [0, domainMax],
-    range: [0, xMax]
-  });
-  return <VxAxisBottom
     top={0}
     left={0}
     scale={xScaleForAxis}
