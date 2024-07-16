@@ -13,7 +13,6 @@ Demo: https://storied-conkies-9f9a1f.netlify.app/
   - react-spring
   - d3
   - axios
-  - csv-parse
   - @vx
 
 
